@@ -36,7 +36,7 @@ const AdminOrderSettings = () => {
 
     try {
       // Sauvegarder directement via l'API
-      const response = await fetch('https://avec-amour-api.calitek-junior.workers.dev/api/settings', {
+      const response = await fetch('https://thegd33.calitek-junior.workers.dev/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

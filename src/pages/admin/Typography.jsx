@@ -46,7 +46,7 @@ const AdminTypography = () => {
       document.documentElement.style.setProperty('--title-font', `'${fontValue}'`)
       
       // Sauvegarder dans la base de données de manière simple
-      const response = await fetch('https://avec-amour-api.calitek-junior.workers.dev/api/settings', {
+      const response = await fetch('https://thegd33.calitek-junior.workers.dev/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ titleFont: fontValue })

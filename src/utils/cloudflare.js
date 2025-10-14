@@ -2,7 +2,7 @@
  * Upload vers Cloudflare R2 via Worker API
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://oglegacy-api.calitek-junior.workers.dev'
+const API_URL = import.meta.env.VITE_API_URL || 'https://thegd33.calitek-junior.workers.dev'
 
 export const uploadToR2 = async (file) => {
   try {
