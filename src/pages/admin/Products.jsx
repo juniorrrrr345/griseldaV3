@@ -59,6 +59,18 @@ const AdminProducts = () => {
     return farm ? farm.name : farmId
   }
 
+  // Fonction pour détecter si c'est un iframe Cloudflare Stream
+  const isCloudflareStreamIframe = (url) => {
+    if (!url) return false
+    return url.includes('cloudflarestream.com') && url.includes('iframe')
+  }
+
+  // Fonction pour détecter si c'est une vidéo
+  const isVideo = (url) => {
+    if (!url) return false
+    return url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.MOV') || url.endsWith('.webm') || url.endsWith('.avi')
+  }
+
   const handleDelete = async (id) => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return
 
@@ -120,7 +132,11 @@ const AdminProducts = () => {
               <div className="flex items-start gap-3">
                 <div className="w-20 h-20 rounded-lg overflow-hidden bg-slate-800 flex-shrink-0">
                   {(product.photo || product.video || product.image) ? (
-                    (product.video || product.photo || product.image).endsWith('.mp4') || (product.video || product.photo || product.image).endsWith('.mov') || (product.video || product.photo || product.image).endsWith('.MOV') ? (
+                    isCloudflareStreamIframe(product.video || product.photo || product.image) ? (
+                      <div className="w-full h-full flex items-center justify-center text-2xl bg-slate-900">
+                        🎥
+                      </div>
+                    ) : isVideo(product.video || product.photo || product.image) ? (
                       <video
                         src={product.video || product.photo || product.image}
                         className="w-full h-full object-cover"
@@ -189,7 +205,11 @@ const AdminProducts = () => {
                   <td className="px-6 py-4">
                     <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-800">
                       {(product.photo || product.video || product.image) ? (
-                        (product.video || product.photo || product.image).endsWith('.mp4') || (product.video || product.photo || product.image).endsWith('.mov') || (product.video || product.photo || product.image).endsWith('.MOV') ? (
+                        isCloudflareStreamIframe(product.video || product.photo || product.image) ? (
+                          <div className="w-full h-full flex items-center justify-center text-2xl bg-slate-900 relative z-10">
+                            🎥
+                          </div>
+                        ) : isVideo(product.video || product.photo || product.image) ? (
                           <video
                             src={product.video || product.photo || product.image}
                             className="w-full h-full object-cover relative z-10"

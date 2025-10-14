@@ -55,12 +55,12 @@ const Products = () => {
 
     // Filtre par catégorie
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category === selectedCategory)
+      filtered = filtered.filter(product => String(product.category) === String(selectedCategory))
     }
 
     // Filtre par farm
     if (selectedFarm) {
-      filtered = filtered.filter(product => product.farm === selectedFarm)
+      filtered = filtered.filter(product => String(product.farm) === String(selectedFarm))
     }
 
     setProducts(filtered)
@@ -139,7 +139,7 @@ const Products = () => {
                       >
                         <option value="">Toutes les catégories</option>
                         {categories.map((cat) => (
-                          <option key={cat.id} value={cat.name}>
+                          <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>
                         ))}
@@ -156,7 +156,7 @@ const Products = () => {
                       >
                         <option value="">Toutes les farms</option>
                         {farms.map((farm) => (
-                          <option key={farm.id} value={farm.name}>
+                          <option key={farm.id} value={farm.id}>
                             {farm.name}
                           </option>
                         ))}
@@ -339,17 +339,12 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
         </div>
         
         <div className="flex items-center justify-between gap-2">
-          <div>
-            <span className="text-2xl font-bold text-theme-accent">
-              {basePrice}
-            </span>
-            {product.variants && product.variants.length > 1 && (
-              <p className="text-xs text-theme-secondary mt-1">
-                {product.variants.length} options
-              </p>
-            )}
-          </div>
-          <Link to={`/products/${product.id}`}>
+          {product.variants && product.variants.length > 1 && (
+            <p className="text-sm text-theme-secondary">
+              {product.variants.length} options disponibles
+            </p>
+          )}
+          <Link to={`/products/${product.id}`} className="ml-auto">
             <button className="px-4 py-2 bg-gradient-to-r from-white to-gray-200 rounded-lg text-black font-semibold hover:from-gray-200 hover:to-gray-400 transition-all">
               Voir
             </button>
