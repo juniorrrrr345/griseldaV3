@@ -8,12 +8,15 @@ const { useEffect: useEffectInModal } = React
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [farms, setFarms] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
 
   useEffect(() => {
     fetchProducts()
+    fetchCategoriesAndFarms()
   }, [])
 
   const fetchProducts = async () => {
@@ -32,6 +35,28 @@ const AdminProducts = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const fetchCategoriesAndFarms = async () => {
+    try {
+      const cats = await getAll('categories')
+      const farmsList = await getAll('farms')
+      setCategories(cats)
+      setFarms(farmsList)
+    } catch (error) {
+      console.error('Error fetching categories/farms:', error)
+    }
+  }
+
+  // Fonction pour convertir ID -> Nom
+  const getCategoryName = (categoryId) => {
+    const cat = categories.find(c => String(c.id) === String(categoryId))
+    return cat ? cat.name : categoryId
+  }
+
+  const getFarmName = (farmId) => {
+    const farm = farms.find(f => String(f.id) === String(farmId))
+    return farm ? farm.name : farmId
   }
 
   const handleDelete = async (id) => {
@@ -118,8 +143,8 @@ const AdminProducts = () => {
                   <h3 className="text-white font-medium truncate">{product.name}</h3>
                   <p className="text-gray-400 text-sm line-clamp-2">{product.description}</p>
                   <p className="text-white font-semibold mt-1">{product.price}</p>
-                  <p className="text-gray-400 text-xs">{product.category}</p>
-                  {product.farm && <p className="text-gray-500 text-xs">🌾 {product.farm}</p>}
+                  <p className="text-gray-400 text-xs">{getCategoryName(product.category)}</p>
+                  {product.farm && <p className="text-gray-500 text-xs">🌾 {getFarmName(product.farm)}</p>}
                 </div>
               </div>
               <div className="flex gap-2">
@@ -189,8 +214,8 @@ const AdminProducts = () => {
                     <div className="text-gray-400 text-sm line-clamp-1">{product.description}</div>
                   </td>
                   <td className="px-6 py-4 text-white font-semibold">{product.price}</td>
-                  <td className="px-6 py-4 text-gray-300">{product.category}</td>
-                  <td className="px-6 py-4 text-gray-300">{product.farm || '-'}</td>
+                  <td className="px-6 py-4 text-gray-300">{getCategoryName(product.category)}</td>
+                  <td className="px-6 py-4 text-gray-300">{product.farm ? getFarmName(product.farm) : '-'}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end space-x-2">
                       <button
@@ -442,7 +467,7 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
             >
               <option value="">Sélectionner une catégorie</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.name}>
+                <option key={cat.id} value={cat.id}>
                   {cat.icon && !cat.icon.startsWith('http') ? cat.icon + ' ' : ''}{cat.name}
                 </option>
               ))}
@@ -458,7 +483,7 @@ const ProductModal = ({ product, onClose, onSuccess }) => {
             >
               <option value="">Aucune farm</option>
               {farms.map((farm) => (
-                <option key={farm.id} value={farm.name}>
+                <option key={farm.id} value={farm.id}>
                   {farm.name}
                 </option>
               ))}
