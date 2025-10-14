@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:worker": "wrangler dev --local --persist",
+    "dev:all": "concurrently \"npm run dev:worker\" \"npm run dev\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:worker": "wrangler deploy"
   },
   "dependencies": {
     "react": "^18.2.0",

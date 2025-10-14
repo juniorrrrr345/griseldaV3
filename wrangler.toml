@@ -11,4 +11,4 @@ database_id = "898fdea8-206c-4552-80f3-fe79511e26f5"
 # Cloudflare R2 Storage
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "boutiqueop
+bucket_name = "boutiqueop"
