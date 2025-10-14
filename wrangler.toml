@@ -1,14 +1,12 @@
-name = "thegd33"
+name = "calitekv3"
 main = "worker/index.js"
 compatibility_date = "2024-01-01"
 
-# Cloudflare D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "gd33v3"
-database_id = "898fdea8-206c-4552-80f3-fe79511e26f5"
+database_name = "calitekv3-db"
+database_id = "efbcd22a-806e-4124-9a2b-14b38cf3ee16"
 
-# Cloudflare R2 Storage
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "boutiqueop"
+bucket_name = "calitek-media"
