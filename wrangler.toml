@@ -5,10 +5,10 @@ compatibility_date = "2024-01-01"
 # Cloudflare D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "GD33V2"
-database_id = "b38148fa-7325-4c06-99a3-ebeed3c8ea6f"
+database_name = "gd33v3"
+database_id = "898fdea8-206c-4552-80f3-fe79511e26f5"
 
 # Cloudflare R2 Storage
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "boutiqueop"
+bucket_name = "boutiqueop
