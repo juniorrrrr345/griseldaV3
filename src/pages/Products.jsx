@@ -200,6 +200,8 @@ const Products = () => {
                   key={product.id} 
                   product={product} 
                   index={index}
+                  categories={categories}
+                  farms={farms}
                   onPreview={() => setPreviewProduct(product)}
                 />
               ))}
@@ -213,6 +215,8 @@ const Products = () => {
         {previewProduct && (
           <ProductPreview 
             product={previewProduct} 
+            categories={categories}
+            farms={farms}
             onClose={() => setPreviewProduct(null)} 
           />
         )}
@@ -223,7 +227,11 @@ const Products = () => {
   )
 }
 
-const ProductCard = ({ product, index, onPreview }) => {
+const ProductCard = ({ product, index, onPreview, categories, farms }) => {
+  // Trouver les noms de catégorie et farm
+  const categoryName = categories.find(c => c.id === product.category)?.name || product.category
+  const farmName = farms.find(f => f.id === product.farm)?.name || product.farm
+  
   // Construire le tableau de médias
   const allMedias = []
   if (product.video && product.video.trim()) allMedias.push(product.video)
@@ -304,14 +312,14 @@ const ProductCard = ({ product, index, onPreview }) => {
         
         {/* Catégorie et Farm */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {product.category && (
+          {categoryName && (
             <span className="px-2 py-1 bg-gray-700/30 border border-gray-600/50 rounded-full text-theme-secondary text-xs">
-              🏷️ {product.category}
+              🏷️ {categoryName}
             </span>
           )}
-          {product.farm && (
+          {farmName && (
             <span className="px-2 py-1 bg-gray-700/30 border border-gray-600/50 rounded-full text-theme-secondary text-xs">
-              🌾 {product.farm}
+              🌾 {farmName}
             </span>
           )}
         </div>
@@ -338,9 +346,14 @@ const ProductCard = ({ product, index, onPreview }) => {
   )
 }
 
-const ProductPreview = ({ product, onClose }) => {
+const ProductPreview = ({ product, onClose, categories, farms }) => {
   const [selectedVariant, setSelectedVariant] = useState(0)
   const variants = product.variants || [{ name: 'Standard', price: product.price }]
+  
+  // Trouver les noms de catégorie et farm
+  const categoryName = categories?.find(c => c.id === product.category)?.name || product.category
+  const farmName = farms?.find(f => f.id === product.farm)?.name || product.farm
+  
   // Afficher la photo en priorité dans l'aperçu
   const displayMedia = product.photo || product.video || product.image
   
@@ -402,11 +415,18 @@ const ProductPreview = ({ product, onClose }) => {
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1">
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-theme-heading mb-2">{product.name}</h2>
-                {product.category && (
-                  <span className="inline-block px-2 sm:px-3 py-1 bg-gray-700/30 border border-gray-600/50 rounded-full text-gray-300 text-xs sm:text-sm">
-                    {product.category}
-                  </span>
-                )}
+                <div className="flex flex-wrap gap-2">
+                  {categoryName && (
+                    <span className="inline-block px-2 sm:px-3 py-1 bg-gray-700/30 border border-gray-600/50 rounded-full text-gray-300 text-xs sm:text-sm">
+                      🏷️ {categoryName}
+                    </span>
+                  )}
+                  {farmName && (
+                    <span className="inline-block px-2 sm:px-3 py-1 bg-gray-700/30 border border-gray-600/50 rounded-full text-gray-300 text-xs sm:text-sm">
+                      🌾 {farmName}
+                    </span>
+                  )}
+                </div>
               </div>
               <button
                 onClick={onClose}

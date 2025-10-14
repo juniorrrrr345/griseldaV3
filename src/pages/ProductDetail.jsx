@@ -6,6 +6,8 @@ import Footer from '../components/Footer'
 const ProductDetail = () => {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
+  const [categories, setCategories] = useState([])
+  const [farms, setFarms] = useState([])
   const [selectedVariant, setSelectedVariant] = useState(0)
   const [selectedMedia, setSelectedMedia] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -17,6 +19,12 @@ const ProductDetail = () => {
       const { getById, getAll } = await import('../utils/api')
       const found = await getById('products', id)
       setProduct(found)
+      
+      // Charger les catégories et farms
+      const categoriesData = await getAll('categories')
+      const farmsData = await getAll('farms')
+      setCategories(categoriesData)
+      setFarms(farmsData)
       
       // Charger les paramètres de commande
       const settings = await getAll('settings')
@@ -82,6 +90,10 @@ const ProductDetail = () => {
 
   const currentVariant = variants[selectedVariant]
   const currentMedia = medias[selectedMedia]
+  
+  // Trouver les noms de catégorie et farm
+  const categoryName = categories.find(c => c.id === product.category)?.name || product.category
+  const farmName = farms.find(f => f.id === product.farm)?.name || product.farm
 
   const handleCommand = () => {
     if (!orderLink || orderLink === '#') {
@@ -219,13 +231,20 @@ const ProductDetail = () => {
                 <h1 className="text-4xl md:text-5xl font-bold text-white glow-effect mb-4">
                   {product.name}
                 </h1>
-                <div className="flex items-baseline flex-wrap gap-3">
+                <div className="flex items-baseline flex-wrap gap-3 mb-3">
                   <span className="text-5xl font-bold text-white">
                     {currentVariant.price}
                   </span>
-                  {product.category && (
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {categoryName && (
                     <span className="px-3 py-1 bg-white/20 border border-white/50 rounded-full text-white text-sm">
-                      {product.category}
+                      🏷️ {categoryName}
+                    </span>
+                  )}
+                  {farmName && (
+                    <span className="px-3 py-1 bg-white/20 border border-white/50 rounded-full text-white text-sm">
+                      🌾 {farmName}
                     </span>
                   )}
                 </div>
