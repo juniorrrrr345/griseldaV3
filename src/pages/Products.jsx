@@ -228,15 +228,15 @@ const Products = () => {
 }
 
 const ProductCard = ({ product, index, onPreview, categories, farms }) => {
-  // Trouver les noms de catégorie et farm
-  const categoryName = categories.find(c => c.id === product.category)?.name || product.category
-  const farmName = farms.find(f => f.id === product.farm)?.name || product.farm
+  // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
+  const categoryName = categories.find(c => String(c.id) === String(product.category))?.name || product.category
+  const farmName = farms.find(f => String(f.id) === String(product.farm))?.name || product.farm
   
-  // Construire le tableau de médias
+  // Construire le tableau de médias - PHOTO EN PREMIER pour affichage carte
   const allMedias = []
-  if (product.video && product.video.trim()) allMedias.push(product.video)
   if (product.photo && product.photo.trim()) allMedias.push(product.photo)
   if (product.image && product.image.trim()) allMedias.push(product.image)
+  if (product.video && product.video.trim()) allMedias.push(product.video)
   
   // Vérifier aussi dans medias si c'est un tableau
   if (product.medias && Array.isArray(product.medias)) {
@@ -247,8 +247,8 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
     })
   }
   
-  // Afficher le premier média disponible
-  const displayImage = allMedias[0] || product.photo || product.video || product.image
+  // Afficher le premier média disponible (photo en priorité)
+  const displayImage = allMedias[0] || product.photo || product.image || product.video
   const basePrice = product.variants?.[0]?.price || product.price
   
   // Fonction pour détecter si c'est une vidéo
@@ -350,12 +350,12 @@ const ProductPreview = ({ product, onClose, categories, farms }) => {
   const [selectedVariant, setSelectedVariant] = useState(0)
   const variants = product.variants || [{ name: 'Standard', price: product.price }]
   
-  // Trouver les noms de catégorie et farm
-  const categoryName = categories?.find(c => c.id === product.category)?.name || product.category
-  const farmName = farms?.find(f => f.id === product.farm)?.name || product.farm
+  // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
+  const categoryName = categories?.find(c => String(c.id) === String(product.category))?.name || product.category
+  const farmName = farms?.find(f => String(f.id) === String(product.farm))?.name || product.farm
   
   // Afficher la photo en priorité dans l'aperçu
-  const displayMedia = product.photo || product.video || product.image
+  const displayMedia = product.photo || product.image || product.video
   
   // Fonction pour détecter si c'est une vidéo
   const isVideo = (url) => {

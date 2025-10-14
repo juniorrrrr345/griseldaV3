@@ -49,13 +49,13 @@ const ProductDetail = () => {
     )
   }
 
-  // Construire le tableau de médias - vidéo en premier pour les détails
+  // Construire le tableau de médias - PHOTO EN PREMIER, puis vidéo
   const allMedias = []
   
-  // Ajouter tous les médias disponibles
-  if (product.video && product.video.trim()) allMedias.push(product.video)
+  // Ajouter tous les médias disponibles - PHOTO D'ABORD
   if (product.photo && product.photo.trim()) allMedias.push(product.photo)
   if (product.image && product.image.trim()) allMedias.push(product.image)
+  if (product.video && product.video.trim()) allMedias.push(product.video)
   
   // Vérifier aussi dans medias si c'est un tableau
   if (product.medias && Array.isArray(product.medias)) {
@@ -91,9 +91,9 @@ const ProductDetail = () => {
   const currentVariant = variants[selectedVariant]
   const currentMedia = medias[selectedMedia]
   
-  // Trouver les noms de catégorie et farm
-  const categoryName = categories.find(c => c.id === product.category)?.name || product.category
-  const farmName = farms.find(f => f.id === product.farm)?.name || product.farm
+  // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
+  const categoryName = categories.find(c => String(c.id) === String(product.category))?.name || product.category
+  const farmName = farms.find(f => String(f.id) === String(product.farm))?.name || product.farm
 
   const handleCommand = () => {
     if (!orderLink || orderLink === '#') {
