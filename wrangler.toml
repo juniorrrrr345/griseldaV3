@@ -5,8 +5,8 @@ compatibility_date = "2024-01-01"
 # Cloudflare D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "gd33v3-db"
-database_id = "86c41062-615a-43e3-ba18-f7fd4b0ca9aa"
+database_name = "thegd33-db"
+database_id = "898fdea8-206c-4552-80f3-fe79511e26f5"
 
 # Cloudflare R2 Storage
 [[r2_buckets]]
