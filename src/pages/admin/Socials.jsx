@@ -123,7 +123,7 @@ const SocialModal = ({ social, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-3 bg-gradient-to-r from-white to-gray-200 rounded-lg text-white font-semibold hover:from-gray-200 hover:to-gray-400 transition-all disabled:opacity-50"
+              className="flex-1 py-3 bg-gradient-to-r from-white to-gray-200 rounded-lg text-black font-semibold hover:from-gray-200 hover:to-gray-400 transition-all disabled:opacity-50"
             >
               {loading ? 'Enregistrement...' : 'Enregistrer'}
             </button>
@@ -202,7 +202,7 @@ const AdminSocials = () => {
         </div>
         <button
           onClick={handleAdd}
-          className="px-6 py-3 bg-gradient-to-r from-white to-gray-200 rounded-lg text-white font-semibold hover:from-gray-200 hover:to-gray-400 transition-all flex items-center space-x-2"
+          className="px-6 py-3 bg-gradient-to-r from-white to-gray-200 rounded-lg text-black font-semibold hover:from-gray-200 hover:to-gray-400 transition-all flex items-center space-x-2"
         >
           <span>➕</span>
           <span>Ajouter un réseau social</span>
