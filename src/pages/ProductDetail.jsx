@@ -83,6 +83,12 @@ const ProductDetail = () => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext)) || url.startsWith('data:video')
   }
   
+  // Fonction pour détecter si c'est un iframe Cloudflare Stream
+  const isCloudflareStreamIframe = (url) => {
+    if (!url) return false
+    return url.includes('cloudflarestream.com') && url.includes('iframe')
+  }
+  
   const variants = product.variants || [{
     name: 'Standard',
     price: product.price
@@ -148,7 +154,15 @@ const ProductDetail = () => {
                     className="w-full h-full relative z-10"
                   >
                     {currentMedia ? (
-                      isVideo(currentMedia) ? (
+                      isCloudflareStreamIframe(currentMedia) ? (
+                        <iframe
+                          src={currentMedia}
+                          className="w-full h-full"
+                          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                          allowFullScreen
+                          style={{ border: 'none' }}
+                        />
+                      ) : isVideo(currentMedia) ? (
                         <video
                           src={currentMedia}
                           className="w-full h-full object-cover"
@@ -191,7 +205,11 @@ const ProductDetail = () => {
                           : 'border-gray-700/30 hover:border-white/50'
                       }`}
                     >
-                      {isVideo(media) ? (
+                      {isCloudflareStreamIframe(media) ? (
+                        <div className="w-full h-full bg-slate-800 flex items-center justify-center text-2xl">
+                          🎥
+                        </div>
+                      ) : isVideo(media) ? (
                         <video 
                           src={media} 
                           className="w-full h-full object-cover" 

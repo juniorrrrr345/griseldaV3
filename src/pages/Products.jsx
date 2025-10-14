@@ -258,6 +258,12 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
     return videoExtensions.some(ext => url.toLowerCase().includes(ext)) || url.startsWith('data:video')
   }
   
+  // Fonction pour détecter si c'est un iframe Cloudflare Stream
+  const isCloudflareStreamIframe = (url) => {
+    if (!url) return false
+    return url.includes('cloudflarestream.com') && url.includes('iframe')
+  }
+  
   console.log('ProductCard:', product.name, 'AllMedias:', allMedias, 'DisplayImage:', displayImage, 'IsVideo:', isVideo(displayImage))
   
   return (
@@ -271,7 +277,15 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
       {/* Image ou Vidéo */}
       <div className="relative h-64 overflow-hidden bg-slate-800" onClick={onPreview}>
         {displayImage ? (
-          isVideo(displayImage) ? (
+          isCloudflareStreamIframe(displayImage) ? (
+            <iframe
+              src={displayImage}
+              className="w-full h-full"
+              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              allowFullScreen
+              style={{ border: 'none' }}
+            />
+          ) : isVideo(displayImage) ? (
             <video
               src={displayImage}
               className="w-full h-full object-cover"
@@ -363,6 +377,12 @@ const ProductPreview = ({ product, onClose, categories, farms }) => {
     const videoExtensions = ['.mp4', '.webm', '.mov', '.MOV', '.avi', '.mkv']
     return videoExtensions.some(ext => url.toLowerCase().includes(ext)) || url.startsWith('data:video')
   }
+  
+  // Fonction pour détecter si c'est un iframe Cloudflare Stream
+  const isCloudflareStreamIframe = (url) => {
+    if (!url) return false
+    return url.includes('cloudflarestream.com') && url.includes('iframe')
+  }
 
   return (
     <motion.div
@@ -383,7 +403,15 @@ const ProductPreview = ({ product, onClose, categories, farms }) => {
           {/* Média */}
           <div className="relative h-[250px] sm:h-[300px] md:h-full bg-slate-800">
             {displayMedia ? (
-              isVideo(displayMedia) ? (
+              isCloudflareStreamIframe(displayMedia) ? (
+                <iframe
+                  src={displayMedia}
+                  className="w-full h-full"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                  allowFullScreen
+                  style={{ border: 'none' }}
+                />
+              ) : isVideo(displayMedia) ? (
                 <video
                   src={displayMedia}
                   className="w-full h-full object-cover"
