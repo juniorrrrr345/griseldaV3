@@ -61,13 +61,20 @@ const AdminProducts = () => {
 
   // Fonction pour extraire le prix d'affichage depuis variants ou prices
   const getDisplayPrice = (product) => {
-    // Debug : voir ce qu'on reçoit (désactiver après debug)
-    // console.log('Product pricing data:', product.name, product)
+    // Debug : ACTIVER pour voir ce qui arrive de l'API
+    console.log('🔍 Product pricing data:', {
+      name: product.name,
+      price: product.price,
+      prices: product.prices,
+      variants: product.variants,
+      fullProduct: product
+    })
     
     // 1. Essayer variants
     if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
       const firstPrice = product.variants[0].price
       if (firstPrice && firstPrice !== '0' && firstPrice !== 0 && firstPrice !== 'N/A') {
+        console.log('✅ Prix trouvé dans variants:', firstPrice)
         return firstPrice
       }
     }
@@ -76,9 +83,12 @@ const AdminProducts = () => {
     try {
       let pricesObj = product.prices
       
+      console.log('🔍 prices brut:', pricesObj, 'type:', typeof pricesObj)
+      
       // Si c'est une string, parser
       if (typeof pricesObj === 'string' && pricesObj !== '') {
         pricesObj = JSON.parse(pricesObj)
+        console.log('📦 prices parsé:', pricesObj)
       }
       
       // Si on a un objet avec des prix
@@ -86,17 +96,22 @@ const AdminProducts = () => {
         const entries = Object.entries(pricesObj)
         if (entries.length > 0) {
           const [name, price] = entries[0]
-          return typeof price === 'number' ? `${price}€` : String(price)
+          const displayPrice = typeof price === 'number' ? `${price}€` : String(price)
+          console.log('✅ Prix trouvé dans prices:', displayPrice)
+          return displayPrice
         }
       }
     } catch (e) {
-      console.error('Error parsing prices:', e, product.prices)
+      console.error('❌ Error parsing prices:', e, product.prices)
     }
     
     // 3. Essayer le champ price simple
     if (product.price && product.price !== 0 && product.price !== '0' && product.price !== 'N/A') {
+      console.log('✅ Prix trouvé dans price:', product.price)
       return product.price
     }
+    
+    console.warn('⚠️ Aucun prix trouvé pour:', product.name)
     
     // 4. Fallback : afficher "Voir détails"
     return 'Voir détails'
