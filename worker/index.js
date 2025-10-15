@@ -581,7 +581,7 @@ async function loginAdmin(request, env, corsHeaders) {
     const { username, password } = await request.json()
     
     const user = await env.DB.prepare(
-      'SELECT * FROM admin_users WHERE username = ? AND password = ?'
+      'SELECT * FROM users WHERE username = ? AND password = ?'
     ).bind(username, password).first()
     
     if (user) {
