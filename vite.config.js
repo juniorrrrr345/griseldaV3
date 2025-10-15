@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173, // Port par défaut de Vite
     proxy: {
       '/api': {
-        target: 'https://griselda-v3.calitek-junior.workers.dev', // Worker Cloudflare en développement
+        target: 'https://calitekv3.calitek-junior.workers.dev', // Worker Cloudflare en développement
         changeOrigin: true
       }
     }
