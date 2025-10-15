@@ -208,17 +208,34 @@ async function handleInit(env, corsHeaders) {
 // Helper pour parser JSON en toute sécurité
 function safeJSONParse(str, defaultValue = []) {
   if (!str) return defaultValue;
+  
   try {
-    return JSON.parse(str);
+    const parsed = JSON.parse(str);
+    
+    // Si après le parse on a encore une string, parser à nouveau (double encoding)
+    if (typeof parsed === 'string') {
+      return safeJSONParse(parsed, defaultValue);
+    }
+    
+    return parsed;
   } catch (e) {
-    // Essayer de réparer le JSON cassé (format {5g:80} → {"5g":80})
-    if (typeof str === 'string' && str.includes(':') && !str.includes('"')) {
+    // Essayer de réparer le JSON cassé (format {5g:80} ou "{"5g":80,10g":160}")
+    if (typeof str === 'string' && str.includes(':')) {
       try {
-        // Ajouter des guillemets autour des clés
-        const fixed = str.replace(/([{,])(\s*)([^":\s]+)(\s*):/g, '$1$2"$3"$4:');
-        return JSON.parse(fixed);
+        // Enlever les guillemets extérieurs en trop
+        let cleaned = str.trim();
+        if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+          cleaned = cleaned.slice(1, -1);
+        }
+        
+        // Ajouter des guillemets autour de TOUTES les clés sans guillemets
+        // {5g:80,10g:160} → {"5g":80,"10g":160}
+        const fixed = cleaned.replace(/([{,]\s*)([^":\s]+)(\s*):/g, '$1"$2"$3:');
+        
+        const result = JSON.parse(fixed);
+        return result;
       } catch (e2) {
-        console.error('JSON parse error even after fix:', str);
+        console.error('JSON parse error even after fix:', str, e2);
         return defaultValue;
       }
     }
