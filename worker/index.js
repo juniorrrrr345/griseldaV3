@@ -231,6 +231,25 @@ async function getProducts(env, corsHeaders) {
   })
 }
 
+async function getProduct(id, env, corsHeaders) {
+  const product = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(id).first()
+  
+  if (!product) {
+    return new Response(JSON.stringify({ error: 'Product not found' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  }
+
+  return new Response(JSON.stringify({
+    ...product,
+    variants: safeJSONParse(product.variants, []),
+    medias: safeJSONParse(product.medias, [])
+  }), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+  })
+}
+
 async function createProduct(request, env, corsHeaders) {
   const data = await request.json()
   const id = data.id || Date.now().toString()
@@ -710,7 +729,7 @@ async function uploadToR2(request, env, corsHeaders) {
       }
     })
 
-const url = `https://pub-bfd3c1d6df2a4c7bb878eabd4bc9c4ec.r2.dev/${filename}`
+    const url = `https://pub-bfd3c1d6df2a4c7bb878eabd4bc9c4ec.r2.dev/${filename}`
 
     return new Response(JSON.stringify({ url, filename }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
