@@ -98,8 +98,8 @@ const ProductDetail = () => {
   const currentMedia = medias[selectedMedia]
   
   // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
-  const categoryName = categories.find(c => String(c.id) === String(product.category))?.name || product.category
-  const farmName = farms.find(f => String(f.id) === String(product.farm))?.name || product.farm
+  const categoryName = Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.category))?.name : null || product.category
+  const farmName = Array.isArray(farms) ? farms.find(f => String(f.id) === String(product.farm))?.name : null || product.farm
 
   const handleCommand = () => {
     if (!orderLink || orderLink === '#') {
@@ -192,7 +192,7 @@ const ProductDetail = () => {
               </div>
 
               {/* Miniatures */}
-              {medias.length > 1 && (
+              {Array.isArray(medias) && medias.length > 1 && (
                 <div className="grid grid-cols-4 gap-4">
                   {medias.map((media, index) => (
                     <motion.div
@@ -280,7 +280,7 @@ const ProductDetail = () => {
               <div className="neon-border rounded-xl p-4 sm:p-6 bg-black/90 backdrop-blur-xl border-2 border-white/30">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4">💰 Quantité & Prix</h3>
                 <div className="space-y-2 sm:space-y-3">
-                  {variants.map((variant, index) => (
+                  {Array.isArray(variants) && variants.map((variant, index) => (
                     <motion.button
                       key={index}
                       whileHover={{ scale: 1.02 }}

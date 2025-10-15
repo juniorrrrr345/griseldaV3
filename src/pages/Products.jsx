@@ -152,7 +152,7 @@ const Products = () => {
                         className="w-full px-4 py-2 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gray-500"
                       >
                         <option value="">Toutes les catégories</option>
-                        {categories.map((cat) => (
+                        {Array.isArray(categories) && categories.map((cat) => (
                           <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>
@@ -169,7 +169,7 @@ const Products = () => {
                         className="w-full px-4 py-2 bg-black border border-gray-700 rounded-lg text-white focus:outline-none focus:border-gray-500"
                       >
                         <option value="">Toutes les farms</option>
-                        {farms.map((farm) => (
+                        {Array.isArray(farms) && farms.map((farm) => (
                           <option key={farm.id} value={farm.id}>
                             {farm.name}
                           </option>
@@ -209,7 +209,7 @@ const Products = () => {
             </div>
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
-              {products.map((product, index) => (
+              {Array.isArray(products) && products.map((product, index) => (
                 <ProductCard 
                   key={product.id} 
                   product={product} 
@@ -478,7 +478,7 @@ const ProductPreview = ({ product, onClose, categories, farms }) => {
             {/* Variantes */}
             <div className="space-y-2 sm:space-y-3">
               <h3 className="text-base sm:text-lg font-bold text-theme-heading">💰 Quantité & Prix</h3>
-              {variants.map((variant, index) => (
+              {Array.isArray(variants) && variants.map((variant, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedVariant(index)}
