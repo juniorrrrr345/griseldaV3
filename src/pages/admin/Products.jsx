@@ -59,6 +59,26 @@ const AdminProducts = () => {
     return farm ? farm.name : farmId
   }
 
+  // Fonction pour extraire le prix d'affichage depuis variants ou prices
+  const getDisplayPrice = (product) => {
+    // Si on a des variants, prendre le prix du premier
+    if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
+      return product.variants[0].price || 'N/A'
+    }
+    
+    // Sinon, essayer de convertir depuis prices
+    if (product.prices && typeof product.prices === 'object') {
+      const pricesArray = Object.entries(product.prices)
+      if (pricesArray.length > 0) {
+        const [name, price] = pricesArray[0]
+        return typeof price === 'number' ? `${price}€` : price.toString()
+      }
+    }
+    
+    // Sinon utiliser le champ price
+    return product.price || 'N/A'
+  }
+
   // Fonction pour détecter si c'est un iframe Cloudflare Stream
   const isCloudflareStreamIframe = (url) => {
     if (!url) return false
@@ -158,7 +178,7 @@ const AdminProducts = () => {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-white font-medium truncate">{product.name}</h3>
                   <p className="text-gray-400 text-sm line-clamp-2">{product.description}</p>
-                  <p className="text-white font-semibold mt-1">{product.price}</p>
+                  <p className="text-white font-semibold mt-1">{getDisplayPrice(product)}</p>
                   <p className="text-gray-400 text-xs">{getCategoryName(product.category)}</p>
                   {product.farm && <p className="text-gray-500 text-xs">🌾 {getFarmName(product.farm)}</p>}
                 </div>
@@ -233,7 +253,7 @@ const AdminProducts = () => {
                     <div className="text-white font-medium">{product.name}</div>
                     <div className="text-gray-400 text-sm line-clamp-1">{product.description}</div>
                   </td>
-                  <td className="px-6 py-4 text-white font-semibold">{product.price}</td>
+                  <td className="px-6 py-4 text-white font-semibold">{getDisplayPrice(product)}</td>
                   <td className="px-6 py-4 text-gray-300">{getCategoryName(product.category)}</td>
                   <td className="px-6 py-4 text-gray-300">{product.farm ? getFarmName(product.farm) : '-'}</td>
                   <td className="px-6 py-4">
