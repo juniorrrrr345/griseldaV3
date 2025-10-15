@@ -89,10 +89,20 @@ const ProductDetail = () => {
     return url.includes('cloudflarestream.com') && url.includes('iframe')
   }
   
-  const variants = product.variants || [{
-    name: 'Standard',
-    price: product.price
-  }]
+  // Convertir prices en variants si nécessaire
+  let variants = product.variants || [];
+  
+  // Si pas de variants, essayer de convertir depuis prices
+  if (!Array.isArray(variants) || variants.length === 0) {
+    if (product.prices && typeof product.prices === 'object') {
+      variants = Object.entries(product.prices).map(([name, price]) => ({
+        name,
+        price: typeof price === 'number' ? `${price}€` : price.toString()
+      }));
+    } else if (product.price) {
+      variants = [{ name: 'Standard', price: product.price }];
+    }
+  }
 
   const currentVariant = variants[selectedVariant] || variants[0] || { name: 'Standard', price: product.price || 'N/A' }
   const currentMedia = medias[selectedMedia]
