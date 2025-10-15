@@ -1,4 +1,4 @@
-name = "griselda-v3"
+name = "calitekv3"
 main = "worker/index.js"
 compatibility_date = "2024-01-01"
 
