@@ -1,12 +1,12 @@
-name = "griseldav3"
+name = "griselda-v3"
 main = "worker/index.js"
 compatibility_date = "2024-01-01"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "griseldav3-db"
-database_id = "VOTRE-DATABASE-ID-ICI"
+database_name = "griselda-db"
+database_id = "9e675619-cc58-4056-9fb6-49e51f9778be"
 
 [[r2_buckets]]
 binding = "R2"
-bucket_name = "griseldav3-media"
+bucket_name = "griselda-media"
