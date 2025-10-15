@@ -94,7 +94,7 @@ const ProductDetail = () => {
     price: product.price
   }]
 
-  const currentVariant = variants[selectedVariant]
+  const currentVariant = variants[selectedVariant] || variants[0] || { name: 'Standard', price: product.price || 'N/A' }
   const currentMedia = medias[selectedMedia]
   
   // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
@@ -107,7 +107,7 @@ const ProductDetail = () => {
       return
     }
     
-    const message = `Bonjour, je voudrais commander:\n\n${product.name}\n${currentVariant.name} - ${currentVariant.price}`
+    const message = `Bonjour, je voudrais commander:\n\n${product.name}\n${currentVariant?.name || 'Standard'} - ${currentVariant?.price || 'N/A'}`
     
     // Si c'est un lien WhatsApp, ajouter le message
     if (orderLink.includes('wa.me') || orderLink.includes('whatsapp')) {
@@ -251,7 +251,7 @@ const ProductDetail = () => {
                 </h1>
                 <div className="flex items-baseline flex-wrap gap-3 mb-3">
                   <span className="text-5xl font-bold text-white">
-                    {currentVariant.price}
+                    {currentVariant?.price || 'N/A'}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -299,7 +299,7 @@ const ProductDetail = () => {
                           <div className="text-xs sm:text-sm text-gray-400">Quantité disponible</div>
                         </div>
                       </div>
-                      <div className="text-xl sm:text-2xl font-bold text-white">{variant.price}</div>
+                      <div className="text-xl sm:text-2xl font-bold text-white">{variant?.price || 'N/A'}</div>
                     </motion.button>
                   ))}
                 </div>

@@ -372,6 +372,7 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
 const ProductPreview = ({ product, onClose, categories, farms }) => {
   const [selectedVariant, setSelectedVariant] = useState(0)
   const variants = product.variants || [{ name: 'Standard', price: product.price }]
+  const currentVariant = variants[selectedVariant] || variants[0] || { name: 'Standard', price: product?.price || 'N/A' }
   
   // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
   const categoryName = categories?.find(c => String(c.id) === String(product.category))?.name || product.category
@@ -489,7 +490,7 @@ const ProductPreview = ({ product, onClose, categories, farms }) => {
                   }`}
                 >
                   <span className="font-semibold text-sm sm:text-base">{variant.name}</span>
-                  <span className="text-lg sm:text-xl font-bold text-theme-accent">{variant.price}</span>
+                  <span className="text-lg sm:text-xl font-bold text-theme-accent">{variant?.price || 'N/A'}</span>
                 </button>
               ))}
             </div>
