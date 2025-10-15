@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Footer from '../components/Footer'
 
 const Products = () => {
+   const [searchParams] = useSearchParams()
   const [products, setProducts] = useState([])
   const [allProducts, setAllProducts] = useState([])
   const [categories, setCategories] = useState([])
@@ -15,35 +16,26 @@ const Products = () => {
   const [showFilters, setShowFilters] = useState(false)
   const [previewProduct, setPreviewProduct] = useState(null)
 
-  useEffect(() => {
+   useEffect(() => {
     fetchData()
   }, [])
+
+  // Lire les paramètres d'URL au chargement
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    const farmParam = searchParams.get('farm')
+    
+    if (categoryParam) {
+      setSelectedCategory(categoryParam)
+    }
+    if (farmParam) {
+      setSelectedFarm(farmParam)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     filterProducts()
   }, [searchTerm, selectedCategory, selectedFarm, allProducts])
-
-  const fetchData = async () => {
-    try {
-      const { getAll } = await import('../utils/api')
-      const productsData = await getAll('products')
-      const categoriesData = await getAll('categories')
-      const farmsData = await getAll('farms')
-      
-      setAllProducts(productsData)
-      setProducts(productsData)
-      setCategories(categoriesData)
-      setFarms(farmsData)
-    } catch (error) {
-      console.error('Erreur lors du chargement des produits:', error)
-      setProducts([])
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const filterProducts = () => {
-    let filtered = [...allProducts]
 
     // Filtre par recherche
     if (searchTerm) {
@@ -85,7 +77,7 @@ const Products = () => {
 
   return (
     <div className="min-h-screen cosmic-bg">
-      <div className="pt-20 pb-32 px-4">
+<div className="pt-20 pb-8 sm:pb-16 lg:pb-24 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <motion.div
@@ -194,7 +186,7 @@ const Products = () => {
               <p className="text-gray-400 text-xl">Aucun produit disponible pour le moment</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+           <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
               {products.map((product, index) => (
                 <ProductCard 
                   key={product.id} 
