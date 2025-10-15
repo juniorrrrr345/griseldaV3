@@ -807,7 +807,7 @@ async function uploadToR2(request, env, corsHeaders) {
       }
     })
 
-    const url = `https://pub-bfd3c1d6df2a4c7bb878eabd4bc9c4ec.r2.dev/${filename}`
+    const url = `https://VOTRE-URL-R2-ICI.r2.dev/${filename}`
 
     return new Response(JSON.stringify({ url, filename }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
