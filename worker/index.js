@@ -233,13 +233,17 @@ function convertPricesToVariants(prices) {
 function transformProduct(p) {
   let variants = safeJSONParse(p.variants, []);
   
-  // Si pas de variants, essayer de convertir depuis prices
+  // Si pas de variants ou variants vide, essayer de convertir depuis prices
   if (!Array.isArray(variants) || variants.length === 0) {
-    variants = convertPricesToVariants(p.prices);
+    // Parser prices si c'est une string
+    const pricesData = typeof p.prices === 'string' ? safeJSONParse(p.prices, null) : p.prices;
+    if (pricesData) {
+      variants = convertPricesToVariants(pricesData);
+    }
   }
   
   // Si toujours pas de variants et qu'on a un price, créer un variant par défaut
-  if (variants.length === 0 && p.price && p.price !== 0) {
+  if (variants.length === 0 && p.price && p.price !== 0 && p.price !== '0') {
     variants = [{ name: 'Standard', price: `${p.price}€` }];
   }
   
@@ -247,7 +251,9 @@ function transformProduct(p) {
     ...p,
     variants,
     medias: safeJSONParse(p.medias, []),
-    price: variants.length > 0 ? variants[0].price : (p.price || 'N/A')
+    price: variants.length > 0 ? variants[0].price : (p.price || 'N/A'),
+    // Garder prices parsé pour le frontend
+    prices: typeof p.prices === 'string' ? safeJSONParse(p.prices, null) : p.prices
   };
 }
 

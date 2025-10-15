@@ -61,22 +61,40 @@ const AdminProducts = () => {
 
   // Fonction pour extraire le prix d'affichage depuis variants ou prices
   const getDisplayPrice = (product) => {
+    // Debug : voir ce qu'on reçoit
+    console.log('Product pricing data:', {
+      name: product.name,
+      price: product.price,
+      prices: product.prices,
+      variants: product.variants
+    })
+    
     // Si on a des variants, prendre le prix du premier
     if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
-      return product.variants[0].price || 'N/A'
+      const firstPrice = product.variants[0].price
+      if (firstPrice && firstPrice !== '0' && firstPrice !== 0) {
+        return firstPrice
+      }
     }
     
     // Sinon, essayer de convertir depuis prices
-    if (product.prices && typeof product.prices === 'object') {
-      const pricesArray = Object.entries(product.prices)
-      if (pricesArray.length > 0) {
-        const [name, price] = pricesArray[0]
-        return typeof price === 'number' ? `${price}€` : price.toString()
+    if (product.prices) {
+      const pricesObj = typeof product.prices === 'string' ? JSON.parse(product.prices) : product.prices
+      if (pricesObj && typeof pricesObj === 'object') {
+        const pricesArray = Object.entries(pricesObj)
+        if (pricesArray.length > 0) {
+          const [name, price] = pricesArray[0]
+          return typeof price === 'number' ? `${price}€` : price.toString()
+        }
       }
     }
     
     // Sinon utiliser le champ price
-    return product.price || 'N/A'
+    if (product.price && product.price !== 0 && product.price !== '0') {
+      return product.price
+    }
+    
+    return 'Prix non défini'
   }
 
   // Fonction pour détecter si c'est un iframe Cloudflare Stream
