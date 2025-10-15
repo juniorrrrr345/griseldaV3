@@ -14,7 +14,7 @@ const AdminLogin = () => {
     setLoading(true)
 
     try {
-      const API_URL = 'griselda-v3.calitek-junior.workers.dev'
+      const API_URL = import.meta.env.VITE_API_URL || 'https://griselda-v3.calitek-junior.workers.dev'
       const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
