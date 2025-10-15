@@ -17,12 +17,16 @@ const AdminOrderSettings = () => {
   const loadSettings = async () => {
     try {
       const data = await getAll('settings')
-      if (data.orderLink || data.orderButtonText) {
-        setSettings({
-          orderLink: data.orderLink || '',
-          orderButtonText: data.orderButtonText || 'Commander'
-        })
-      }
+      
+      // Les settings sont stockées comme { key: value, key2: value2 }
+      // Extraire orderLink et orderButtonText
+      const orderLink = data.orderLink?.value || data.orderLink || ''
+      const orderButtonText = data.orderButtonText?.value || data.orderButtonText || 'Commander'
+      
+      setSettings({
+        orderLink: orderLink,
+        orderButtonText: orderButtonText
+      })
     } catch (error) {
       console.error('Error loading settings:', error)
     } finally {
@@ -35,19 +39,27 @@ const AdminOrderSettings = () => {
     setSaving(true)
 
     try {
-      // Sauvegarder directement via l'API
-      const response = await fetch('https://thegd33.calitek-junior.workers.dev/api/settings', {
+      const API_URL = import.meta.env.VITE_API_URL || 'https://griselda-v3.calitek-junior.workers.dev'
+      
+      // Sauvegarder orderLink
+      await fetch(`${API_URL}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          orderLink: settings.orderLink,
-          orderButtonText: settings.orderButtonText
+          key: 'orderLink',
+          value: settings.orderLink
         })
       })
       
-      if (!response.ok) {
-        throw new Error('Erreur API')
-      }
+      // Sauvegarder orderButtonText
+      await fetch(`${API_URL}/api/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: 'orderButtonText',
+          value: settings.orderButtonText
+        })
+      })
       
       alert('✅ Paramètres de commande enregistrés avec succès !')
     } catch (error) {

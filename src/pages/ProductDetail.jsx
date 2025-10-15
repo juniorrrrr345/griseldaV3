@@ -28,11 +28,17 @@ const ProductDetail = () => {
       
       // Charger les paramètres de commande
       const settings = await getAll('settings')
-      if (settings.orderLink) {
-        setOrderLink(settings.orderLink)
+      
+      // Les settings sont stockées comme { key: value, key2: value2 }
+      // Extraire orderLink et orderButtonText
+      const orderLinkValue = settings.orderLink?.value || settings.orderLink
+      const orderButtonTextValue = settings.orderButtonText?.value || settings.orderButtonText
+      
+      if (orderLinkValue) {
+        setOrderLink(orderLinkValue)
       }
-      if (settings.orderButtonText) {
-        setOrderButtonText(settings.orderButtonText)
+      if (orderButtonTextValue) {
+        setOrderButtonText(orderButtonTextValue)
       }
     }
     fetchProduct()
