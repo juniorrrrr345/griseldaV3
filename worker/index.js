@@ -216,15 +216,46 @@ function safeJSONParse(str, defaultValue = []) {
   }
 }
 
+// Convertir prices (objet) en variants (tableau)
+function convertPricesToVariants(prices) {
+  if (!prices) return [];
+  
+  const pricesObj = typeof prices === 'string' ? safeJSONParse(prices, {}) : prices;
+  if (!pricesObj || typeof pricesObj !== 'object') return [];
+  
+  return Object.entries(pricesObj).map(([name, price]) => ({
+    name,
+    price: typeof price === 'number' ? `${price}€` : price.toString()
+  }));
+}
+
+// Transformer un produit pour qu'il ait toujours des variants
+function transformProduct(p) {
+  let variants = safeJSONParse(p.variants, []);
+  
+  // Si pas de variants, essayer de convertir depuis prices
+  if (!Array.isArray(variants) || variants.length === 0) {
+    variants = convertPricesToVariants(p.prices);
+  }
+  
+  // Si toujours pas de variants et qu'on a un price, créer un variant par défaut
+  if (variants.length === 0 && p.price && p.price !== 0) {
+    variants = [{ name: 'Standard', price: `${p.price}€` }];
+  }
+  
+  return {
+    ...p,
+    variants,
+    medias: safeJSONParse(p.medias, []),
+    price: variants.length > 0 ? variants[0].price : (p.price || 'N/A')
+  };
+}
+
 async function getProducts(env, corsHeaders) {
   const { results } = await env.DB.prepare('SELECT * FROM products ORDER BY createdAt DESC').all()
   
-  // Parse variants and medias JSON de manière sécurisée
-  const products = results.map(p => ({
-    ...p,
-    variants: safeJSONParse(p.variants, []),
-    medias: safeJSONParse(p.medias, [])
-  }))
+  // Transformer les produits pour avoir toujours des variants
+  const products = results.map(transformProduct)
 
   return new Response(JSON.stringify(products), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -241,11 +272,7 @@ async function getProduct(id, env, corsHeaders) {
     })
   }
 
-  return new Response(JSON.stringify({
-    ...product,
-    variants: safeJSONParse(product.variants, []),
-    medias: safeJSONParse(product.medias, [])
-  }), {
+  return new Response(JSON.stringify(transformProduct(product)), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
   })
 }
