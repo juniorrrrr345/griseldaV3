@@ -5,7 +5,7 @@
  * Importe tous les produits avec leurs prix vers la nouvelle base
  */
 
-const fs = require('fs');
+import { readFileSync } from 'fs';
 
 const API_URL = 'https://thegd33.calitek-junior.workers.dev';
 const EXPORT_FILE = './export-gd33v2.json';
@@ -15,7 +15,7 @@ console.log('🚀 Import des produits depuis export-gd33v2.json\n');
 // Lire le fichier export
 let data;
 try {
-  const fileContent = fs.readFileSync(EXPORT_FILE, 'utf8');
+  const fileContent = readFileSync(EXPORT_FILE, 'utf8');
   data = JSON.parse(fileContent);
 } catch (error) {
   console.error('❌ Erreur lors de la lecture du fichier:', error.message);
