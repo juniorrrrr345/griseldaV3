@@ -231,11 +231,17 @@ function convertPricesToVariants(prices) {
 
 // Transformer un produit pour qu'il ait toujours des variants
 function transformProduct(p) {
-  let variants = safeJSONParse(p.variants, []);
+  let variants = safeJSONParse(p.variants, null);
   
-  // Si pas de variants ou variants vide, essayer de convertir depuis prices
-  if (!Array.isArray(variants) || variants.length === 0) {
-    // Parser prices si c'est une string
+  // Si variants est un OBJET (format {name: price}), le convertir en tableau
+  if (variants && typeof variants === 'object' && !Array.isArray(variants)) {
+    // C'est un objet de prix, convertir en tableau
+    variants = Object.entries(variants).map(([name, price]) => ({
+      name,
+      price: typeof price === 'number' ? `${price}€` : String(price)
+    }));
+  } else if (!Array.isArray(variants) || variants.length === 0) {
+    // Sinon si variants est vide, essayer prices
     const pricesData = typeof p.prices === 'string' ? safeJSONParse(p.prices, null) : p.prices;
     if (pricesData) {
       variants = convertPricesToVariants(pricesData);
@@ -243,8 +249,12 @@ function transformProduct(p) {
   }
   
   // Si toujours pas de variants et qu'on a un price, créer un variant par défaut
-  if (variants.length === 0 && p.price && p.price !== 0 && p.price !== '0') {
-    variants = [{ name: 'Standard', price: `${p.price}€` }];
+  if (!variants || variants.length === 0) {
+    if (p.price && p.price !== 0 && p.price !== '0') {
+      variants = [{ name: 'Standard', price: `${p.price}€` }];
+    } else {
+      variants = [];
+    }
   }
   
   // Normaliser les noms de colonnes (supporter ancienne et nouvelle structure)
