@@ -289,7 +289,7 @@ const ProductCard = ({ product, index, onPreview, categories, farms }) => {
       className="neon-border rounded-2xl overflow-hidden bg-slate-900/50 backdrop-blur-sm group cursor-pointer"
     >
       {/* Image ou Vidéo */}
-      <div className="relative h-64 overflow-hidden bg-slate-800" onClick={onPreview}>
+      <div className="relative h-48 sm:h-64 md:h-72 overflow-hidden bg-slate-800" onClick={onPreview}>
         {displayImage ? (
           isCloudflareStreamIframe(displayImage) ? (
             <iframe
