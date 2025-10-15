@@ -211,6 +211,17 @@ function safeJSONParse(str, defaultValue = []) {
   try {
     return JSON.parse(str);
   } catch (e) {
+    // Essayer de réparer le JSON cassé (format {5g:80} → {"5g":80})
+    if (typeof str === 'string' && str.includes(':') && !str.includes('"')) {
+      try {
+        // Ajouter des guillemets autour des clés
+        const fixed = str.replace(/([{,])(\s*)([^":\s]+)(\s*):/g, '$1$2"$3"$4:');
+        return JSON.parse(fixed);
+      } catch (e2) {
+        console.error('JSON parse error even after fix:', str);
+        return defaultValue;
+      }
+    }
     console.error('JSON parse error:', str);
     return defaultValue;
   }
