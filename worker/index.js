@@ -247,12 +247,19 @@ function transformProduct(p) {
     variants = [{ name: 'Standard', price: `${p.price}€` }];
   }
   
+  // Normaliser les noms de colonnes (supporter ancienne et nouvelle structure)
   return {
     ...p,
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    category: p.category || p.category_id,
+    farm: p.farm || p.farm_id,
+    photo: p.photo || p.image_url,
+    video: p.video || p.video_url,
     variants,
     medias: safeJSONParse(p.medias, []),
     price: variants.length > 0 ? variants[0].price : (p.price || 'N/A'),
-    // Garder prices parsé pour le frontend
     prices: typeof p.prices === 'string' ? safeJSONParse(p.prices, null) : p.prices
   };
 }
