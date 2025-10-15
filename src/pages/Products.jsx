@@ -243,8 +243,8 @@ const Products = () => {
 
 const ProductCard = ({ product, index, onPreview, categories, farms }) => {
   // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
-  const categoryName = categories.find(c => String(c.id) === String(product.category))?.name || product.category
-  const farmName = farms.find(f => String(f.id) === String(product.farm))?.name || product.farm
+  const categoryName = Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.category))?.name : null || product.category
+  const farmName = Array.isArray(farms) ? farms.find(f => String(f.id) === String(product.farm))?.name : null || product.farm
   
   // Construire le tableau de médias - PHOTO EN PREMIER pour affichage carte
   const allMedias = []
