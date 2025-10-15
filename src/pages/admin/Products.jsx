@@ -61,40 +61,45 @@ const AdminProducts = () => {
 
   // Fonction pour extraire le prix d'affichage depuis variants ou prices
   const getDisplayPrice = (product) => {
-    // Debug : voir ce qu'on reçoit
-    console.log('Product pricing data:', {
-      name: product.name,
-      price: product.price,
-      prices: product.prices,
-      variants: product.variants
-    })
+    // Debug : voir ce qu'on reçoit (désactiver après debug)
+    // console.log('Product pricing data:', product.name, product)
     
-    // Si on a des variants, prendre le prix du premier
+    // 1. Essayer variants
     if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
       const firstPrice = product.variants[0].price
-      if (firstPrice && firstPrice !== '0' && firstPrice !== 0) {
+      if (firstPrice && firstPrice !== '0' && firstPrice !== 0 && firstPrice !== 'N/A') {
         return firstPrice
       }
     }
     
-    // Sinon, essayer de convertir depuis prices
-    if (product.prices) {
-      const pricesObj = typeof product.prices === 'string' ? JSON.parse(product.prices) : product.prices
-      if (pricesObj && typeof pricesObj === 'object') {
-        const pricesArray = Object.entries(pricesObj)
-        if (pricesArray.length > 0) {
-          const [name, price] = pricesArray[0]
-          return typeof price === 'number' ? `${price}€` : price.toString()
+    // 2. Essayer prices (peut être string JSON ou objet)
+    try {
+      let pricesObj = product.prices
+      
+      // Si c'est une string, parser
+      if (typeof pricesObj === 'string' && pricesObj !== '') {
+        pricesObj = JSON.parse(pricesObj)
+      }
+      
+      // Si on a un objet avec des prix
+      if (pricesObj && typeof pricesObj === 'object' && !Array.isArray(pricesObj)) {
+        const entries = Object.entries(pricesObj)
+        if (entries.length > 0) {
+          const [name, price] = entries[0]
+          return typeof price === 'number' ? `${price}€` : String(price)
         }
       }
+    } catch (e) {
+      console.error('Error parsing prices:', e, product.prices)
     }
     
-    // Sinon utiliser le champ price
-    if (product.price && product.price !== 0 && product.price !== '0') {
+    // 3. Essayer le champ price simple
+    if (product.price && product.price !== 0 && product.price !== '0' && product.price !== 'N/A') {
       return product.price
     }
     
-    return 'Prix non défini'
+    // 4. Fallback : afficher "Voir détails"
+    return 'Voir détails'
   }
 
   // Fonction pour détecter si c'est un iframe Cloudflare Stream
