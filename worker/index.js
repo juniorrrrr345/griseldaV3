@@ -205,36 +205,28 @@ async function handleInit(env, corsHeaders) {
 }
 
 // ============ PRODUCTS ============
+// Helper pour parser JSON en toute sécurité
+function safeJSONParse(str, defaultValue = []) {
+  if (!str) return defaultValue;
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    console.error('JSON parse error:', str);
+    return defaultValue;
+  }
+}
+
 async function getProducts(env, corsHeaders) {
   const { results } = await env.DB.prepare('SELECT * FROM products ORDER BY createdAt DESC').all()
   
-  // Parse variants and medias JSON
+  // Parse variants and medias JSON de manière sécurisée
   const products = results.map(p => ({
     ...p,
-    variants: p.variants ? JSON.parse(p.variants) : [],
-    medias: p.medias ? JSON.parse(p.medias) : []
+    variants: safeJSONParse(p.variants, []),
+    medias: safeJSONParse(p.medias, [])
   }))
 
   return new Response(JSON.stringify(products), {
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-  })
-}
-
-async function getProduct(id, env, corsHeaders) {
-  const product = await env.DB.prepare('SELECT * FROM products WHERE id = ?').bind(id).first()
-  
-  if (!product) {
-    return new Response(JSON.stringify({ error: 'Product not found' }), {
-      status: 404,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    })
-  }
-
-  return new Response(JSON.stringify({
-    ...product,
-    variants: product.variants ? JSON.parse(product.variants) : [],
-    medias: product.medias ? JSON.parse(product.medias) : []
-  }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
   })
 }
