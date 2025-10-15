@@ -98,8 +98,8 @@ const ProductDetail = () => {
   const currentMedia = medias[selectedMedia]
   
   // Trouver les noms de catégorie et farm (convertir en string pour la comparaison)
-  const categoryName = Array.isArray(categories) ? categories.find(c => String(c.id) === String(product.category))?.name : null || product.category
-  const farmName = Array.isArray(farms) ? farms.find(f => String(f.id) === String(product.farm))?.name : null || product.farm
+  const categoryName = (Array.isArray(categories) && categories.find(c => String(c.id) === String(product.category))?.name) || product.category
+  const farmName = (Array.isArray(farms) && farms.find(f => String(f.id) === String(product.farm))?.name) || product.farm
 
   const handleCommand = () => {
     if (!orderLink || orderLink === '#') {
